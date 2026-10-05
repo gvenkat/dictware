@@ -56,3 +56,20 @@ def invert(d: dict) -> dict:
             continue
         inverted[value] = key
     return inverted
+
+
+def compact(d: dict, only_none=True) -> dict:
+    """Return a new dict with empty values removed from ``d``.
+
+    By default only ``None`` values are removed, like Ruby's ``Hash#compact``.
+    With ``only_none=False``, every falsy value is removed: ``None``, ``False``,
+    ``0``, ``""``, and empty containers such as ``[]`` and ``{}``.
+
+        >>> compact({"a": 1, "b": None, "c": 0})
+        {'a': 1, 'c': 0}
+        >>> compact({"a": 1, "b": None, "c": 0}, only_none=False)
+        {'a': 1}
+    """
+    if only_none:
+        return {key: value for key, value in d.items() if value is not None}
+    return {key: value for key, value in d.items() if value}

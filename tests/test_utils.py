@@ -1,6 +1,6 @@
 import pytest
 
-from dictsy.utils import dig, invert
+from dictsy.utils import compact, dig, invert
 
 
 def test_nested_dict():
@@ -60,3 +60,31 @@ def test_invert_does_not_mutate_input():
     data = {"a": 1}
     invert(data)
     assert data == {"a": 1}
+
+
+def test_compact_removes_none_by_default():
+    assert compact({"a": 1, "b": None}) == {"a": 1}
+
+
+def test_compact_keeps_other_falsy_values_by_default():
+    data = {"a": 0, "b": False, "c": "", "d": [], "e": {}, "f": None}
+    assert compact(data) == {"a": 0, "b": False, "c": "", "d": [], "e": {}}
+
+
+def test_compact_only_none_false_removes_all_falsy_values():
+    data = {"a": 0, "b": False, "c": "", "d": [], "e": {}, "f": None, "g": 1}
+    assert compact(data, only_none=False) == {"g": 1}
+
+
+def test_compact_is_shallow():
+    assert compact({"a": {"b": None}}) == {"a": {"b": None}}
+
+
+def test_compact_empty_dict():
+    assert compact({}) == {}
+
+
+def test_compact_does_not_mutate_input():
+    data = {"a": None}
+    compact(data)
+    assert data == {"a": None}
