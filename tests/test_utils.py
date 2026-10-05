@@ -1,6 +1,6 @@
 import pytest
 
-from dictsy.utils import dig
+from dictsy.utils import dig, invert
 
 
 def test_nested_dict():
@@ -42,3 +42,21 @@ def test_non_diggable_intermediate_raises():
 def test_list_with_string_key_raises():
     with pytest.raises(TypeError):
         dig({"a": [1, 2]}, "a", "0")
+
+
+def test_invert_swaps_keys_and_values():
+    assert invert({"a": 1, "b": 2}) == {1: "a", 2: "b"}
+
+
+def test_invert_skips_unhashable_values():
+    assert invert({"a": 1, "b": [2], "c": {"x": 3}, "d": (1, [2])}) == {1: "a"}
+
+
+def test_invert_duplicate_values_last_wins():
+    assert invert({"a": 1, "b": 1}) == {1: "b"}
+
+
+def test_invert_does_not_mutate_input():
+    data = {"a": 1}
+    invert(data)
+    assert data == {"a": 1}

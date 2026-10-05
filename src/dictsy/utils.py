@@ -34,3 +34,25 @@ def dig(obj: dict | list, *keys: Hashable) -> Any:
         else:
             raise TypeError(f"{type(current).__name__} does not support dig")
     return current
+
+
+def invert(d: dict) -> dict:
+    """Return a new dict with the keys and values of ``d`` swapped.
+
+    Entries whose value is not hashable (e.g. lists, dicts, sets) are skipped.
+    If several keys share the same value, the last one wins, like Ruby's
+    ``Hash#invert``.
+
+        >>> invert({"a": 1, "b": 2})
+        {1: 'a', 2: 'b'}
+        >>> invert({"a": 1, "b": [2]})
+        {1: 'a'}
+    """
+    inverted = {}
+    for key, value in d.items():
+        try:
+            hash(value)
+        except TypeError:
+            continue
+        inverted[value] = key
+    return inverted
