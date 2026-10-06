@@ -26,4 +26,12 @@ def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
     >>> all({"a": 1, "b": 5}, lambda k, v: v > 0)
     False
   """
-  pass
+
+  for key, value in d.items():
+    if cb is not None and not cb(key, value):
+      return False
+
+    if cb is None and not bool(value):
+      return False
+
+  return True
