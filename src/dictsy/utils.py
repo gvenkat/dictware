@@ -1,7 +1,56 @@
 from __future__ import annotations
 
-from typing import Any, Hashable
+from typing import Any, Hashable, Callable, Any
 
+def all(obj: dict, cb: None | Callable[[Hashable, Any], bool] = None) -> dict[Hashable, Any]:
+    """Returns ``True`` if all bool(value) or bool(cb(value)) of all values are ``True``
+    """
+    return all([bool(value) if cb is not None else bool(cb(key, value)) for key, value in obj.items()])
+
+def any(obj: dict, cb: Callable[[Hashable, Any], bool]) -> dict[Hashable, Any]:
+    return any([bool(value) if cb is not None else bool(cb(key, value)) for key, value in obj.items()])
+
+def one():
+    pass
+
+def none():
+    pass
+
+def delete_if():
+    pass
+
+def keep_if():
+    pass
+
+def has_value():
+    pass
+
+def reject():
+    pass
+
+def reject_if():
+    pass
+
+def grep():
+    pass
+
+def grep_v():
+    pass
+
+def filter():
+    pass
+
+def map():
+    pass
+
+def transform_keys():
+    pass
+
+def transform_values():
+    pass
+
+def reduce():
+    pass
 
 def dig(obj: dict | list, *keys: Hashable) -> Any:
     """Return the value nested in ``obj`` at the path given by ``keys``.
