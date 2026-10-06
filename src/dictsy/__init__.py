@@ -1,10 +1,13 @@
-from .query import every, some, dig
-from .query import invert, compact
+from .query import every, some, dig, has_value
+from .query import invert, compact, transform
 
 __all__ = [
   every,
   some,
   dig,
+  has_value,
+
   invert,
-  compact
+  compact,
+  transform,
 ]
