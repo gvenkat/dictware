@@ -6,7 +6,7 @@ from typing import Hashable
 
 from .types import BoolCallback
 
-def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+def every(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   """Returns ``True`` if ALL values in the ``dict`` are ``True``
 
   Returns ``True`` if ALL values in a given dict is "truthy" or ALL the values evaulated by
@@ -41,7 +41,7 @@ def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   return True
 
 
-def any(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+def some(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   """Returns ``True`` if ANY of the values in the ``dict`` are ``True``
 
   Returns ``True`` if ANY of the values in a given dict is "truthy" or ANY the values evaulated by
@@ -90,7 +90,7 @@ def none(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   Returns:
     True if NONE of the values (or ``cb(key, value)``) is evaluated to True. False otherwise
   """
-  return not any(d, cb)
+  return not some(d, cb)
 
 def one(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   return [bool(value) if cb is None else cb(key, value) for key, value in d.items()].count(True) == 1
