@@ -1,6 +1,9 @@
 import builtins
 
-from typing import Optional, Any, Hashable
+from typing import Optional
+from typing import Any
+from typing import Hashable
+
 from .types import BoolCallback
 
 def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
@@ -90,7 +93,7 @@ def none(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   return not any(d, cb)
 
 def one(d: dict, cb: Optional[BoolCallback] = None) -> bool:
-  pass
+  return [bool(value) if cb is None else cb(key, value) for key, value in d.items()].count(True) == 1
 
 def has_value(d: dict, value_or_cb: Any | Optional[BoolCallback]) -> bool:
   is_callable = callable(value_or_cb)
