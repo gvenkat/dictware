@@ -35,3 +35,39 @@ def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
       return False
 
   return True
+
+
+def any(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+  """Returns ``True`` if ANY of the values in the ``dict`` are ``True``
+
+  Returns ``True`` if ANY of the values in a given dict is "truthy" or ANY the values evaulated by
+  the optional callback is "truthy"
+
+  Args:
+    d: The dict object
+    cb: If callback is given, result of ``cb(key, value)`` is considered, if not ``value`` is tested
+        directly for truthiness
+
+  Returns:
+    True if any value (or ``cb(key, value)``) is evaluated to True. False otherwise
+
+  Examples:
+    >>> any({})
+    False
+    >>> any({"a": 1, "b": 2})
+    True
+    >>> any({"a": 1, "b": None})
+    True
+    >>> any({"a": [], "b": None})
+    False
+    >>> any({"a": 1, "b": 5}, lambda k, v: v > 2)
+    True
+  """
+  for key, value in d.items():
+    if cb is not None and cb(key, value):
+      return True
+
+    if cb is None and bool(value) is True:
+      return True
+
+  return False

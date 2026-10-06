@@ -1,5 +1,6 @@
-from .query import all
+from .query import all, any
 
 __all__ = [
   all,
+  any,
 ]

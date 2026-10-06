@@ -1,6 +1,6 @@
 import pytest
 
-from dictsy import all
+from dictsy import all, any
 
 @pytest.mark.parametrize(
   'd, expected',
@@ -19,4 +19,16 @@ def test_all_no_callback(d, expected):
 
 
 def test_all_with_callback():
-  pass
+  l = {"a": 5, "b": 10}
+  assert all(l) == True
+  assert all(l, lambda k, v: k in ['a', 'b']) == True
+  assert all(l, lambda k, v: v > 5) == False
+
+@pytest.mark.parametrize(
+  'd, expected',
+  [
+    [{}, False]
+  ]
+)
+def test_any_no_callback(d, expected):
+  assert any(d) == expected
