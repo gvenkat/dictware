@@ -1,11 +1,12 @@
-from typing import Optional, Any, Hashable
+import builtins
 
+from typing import Optional, Any, Hashable
 from .types import BoolCallback
 
 def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
-  """Returns ``True`` if all values in the ``dict`` are ``True``
+  """Returns ``True`` if ALL values in the ``dict`` are ``True``
 
-  Returns ``True`` if all values in a given dict is "truthy" or all the values evaulated by
+  Returns ``True`` if ALL values in a given dict is "truthy" or ALL the values evaulated by
   the optional callback is "truthy"
 
   Args:
@@ -27,11 +28,11 @@ def all(d: dict, cb: Optional[BoolCallback] = None) -> bool:
     False
   """
 
-  for key, value in d.items():
-    if cb is not None and not cb(key, value):
-      return False
+  if cb is None:
+    return builtins.all(d.values())
 
-    if cb is None and not bool(value):
+  for key, value in d.items():
+    if not cb(key, value):
       return False
 
   return True
@@ -63,23 +64,41 @@ def any(d: dict, cb: Optional[BoolCallback] = None) -> bool:
     >>> any({"a": 1, "b": 5}, lambda k, v: v > 2)
     True
   """
-  for key, value in d.items():
-    if cb is not None and cb(key, value):
-      return True
+  if cb is None:
+    return builtins.any(d.values())
 
-    if cb is None and bool(value) is True:
+  for key, value in d.items():
+    if cb(key, value):
       return True
 
   return False
 
 def none(d: dict, cb: Optional[BoolCallback] = None) -> bool:
-  pass
+  """Returns ``True`` if NONE of the values are truthy
+
+  Returns ``True`` if NONE of the values in a given dict is "truthy" or NONE of the values evaulated by
+  the optional callback is "truthy"
+
+  Args:
+    d: The dict object
+    cb: If callback is given, result of ``cb(key, value)`` is considered, if not ``value`` is tested
+        directly for truthiness
+
+  Returns:
+    True if NONE of the values (or ``cb(key, value)``) is evaluated to True. False otherwise
+  """
+  return not any(d, cb)
 
 def one(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   pass
 
 def has_value(d: dict, value_or_cb: Any | Optional[BoolCallback]) -> bool:
-  pass
+  is_callable = callable(value_or_cb)
+  for value in d.items():
+    if (is_callable and value_or_cb(value)) or value == value_or_cb:
+      return True
+  return False
+
 
 def dig(obj: dict | list, *keys: Hashable) -> Any:
     """Return the value nested in ``obj`` at the path given by ``keys``.
