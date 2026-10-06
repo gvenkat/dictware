@@ -1,23 +1,37 @@
 import re
 
-from types import Hashable
-from types import Any
-from types import Callable
+from typing import Hashable
+from typing import Any
+from typing import Callable
 
 from .types import ValueCallback
 from .types import BoolCallback
 
-def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any = 0) -> Any:
-  """Apply the callback cumulitively on each key, value pair of dictionary and return the resulting value
+def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any) -> Any:
+  """Cumulatively apply a function on each entry (key, value) of dictionary and an initial value, return the result of cumulative application
 
-  The callback accepts three arg
+  Callback function is invoked for every key, value pair in the dictionary along with result of last application. The
+  result is then applied again for the next invocation of the callback, until finally the result is obtained.
 
+  Args:
+    d: Dictionary
+    cb: Callback accepts three arguments, key, value and memo, the result of last invocation
+    memo: Initial value for cumulutive result
 
+  Returns:
+    Single value after iterating through the whole dictionary
+
+  Examples:
+    >>> reduce({}, lambda key, value, memo: memo)
+    0
+    >>> reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value )
+    3
+    >>> reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value, 10)
+    13
   """
-  memo_ = memo
   for key, value in d.items():
-    memo_ = cb(key, value, memo_)
-  return memo_
+    memo = cb(key, value, memo)
+  return memo
 
 def select():
   pass
