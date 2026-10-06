@@ -27,8 +27,15 @@ def test_all_with_callback():
 @pytest.mark.parametrize(
   'd, expected',
   [
-    [{}, False]
+    [{}, False],
+    [{"a": False, "b": []}, False],
+    [{"a": False, "b": 0}, False],
+    [{"a": False, "b": 2}, True]
   ]
 )
 def test_any_no_callback(d, expected):
   assert any(d) == expected
+
+def test_any_with_callback():
+  assert any({"a": 2, "b": 5}, lambda k, v: v > 5) == False
+  assert any({"a": 2, "b": 5}, lambda k, v: v > 2) == True
