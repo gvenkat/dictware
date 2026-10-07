@@ -1,14 +1,27 @@
-import pytest
 import re
 
-from dictsy import compact, invert, reduce, select, reject, transform, transform_keys
-from dictsy import grep, grep_v, grep_keys, grep_keys_v
+import pytest
+
+from dictsy import (
+    compact,
+    grep,
+    grep_keys,
+    grep_keys_v,
+    grep_v,
+    invert,
+    reduce,
+    reject,
+    select,
+    transform,
+    transform_keys,
+)
+
 
 def test_transform_keys_empty_dict():
     assert transform_keys({}, lambda key, value: value ) == {}
 
 def test_transform_keys_non_empty_dict():
-    assert transform_keys({"a": 2}, lambda key, value: "PRE_%s_%d" % (key, value)) == {"PRE_a_2": 2}
+    assert transform_keys({"a": 2}, lambda key, value: f"PRE_{key}_{value}") == {"PRE_a_2": 2}
 
 def test_transform_keys_with_overwriting_keys():
     assert transform_keys({"pre_a": 2, "post_a": 5}, lambda key, value: "a") == {"a": 5}
