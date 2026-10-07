@@ -1,5 +1,11 @@
 
-from dictsy import compact, invert, reduce, select, reject
+from dictsy import compact, invert, reduce, select, reject, transform
+
+def test_transform_empty_dict():
+    assert transform({}, lambda key, value: value ) == {}
+
+def test_transform_non_empty_dict():
+    assert transform({"a": 2, "b": 5}, lambda key, value: value * 2 ) == {"a": 4, "b": 10}
 
 def test_reject_empty_dict():
     assert reject({}) == {}

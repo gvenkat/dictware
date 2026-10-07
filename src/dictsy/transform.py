@@ -81,7 +81,24 @@ def reject(d: dict, cb: Optional[BoolCallback] = None) -> dict:
   cb_ = (lambda key, value: not bool(value)) if cb is None else (lambda key, value: not cb(key, value))
   return select(d, cb_)
 
-def transform(d: dict[Hashable, Any], cb: ValueCallback) -> dict[Hashable, Any]:
+def transform(d: dict[Hashable, Any], cb: ValueCallback) -> dict:
+  """Returns a new dictionary with same keys as the original dictionary, and values returned by invoking the callback function
+
+  Returns a new dictionary with identical keys but values replaced by return value of ``cb(key, value)``
+
+  Args:
+    d: Dictionary
+    cb: Callback function accepts two arguments ``key`` and ``value`` and returns a new value
+
+  Returns:
+    A new dictionary with identical keys and replaced values
+
+  Examples:
+    >>> transform({}, lambda key, value: value)
+    {}
+    >>> transform({"a": 2}, lambda key, value: value * 2)
+    {"a": 4}
+  """
   return { key: cb(key, value) for key, value in d.items() }
 
 def transform_keys(d: dict, cb: ValueCallback) -> dict:
