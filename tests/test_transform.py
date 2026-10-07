@@ -1,5 +1,19 @@
+import pytest
 
-from dictsy import compact, invert, reduce, select, reject, transform
+from dictsy import compact, invert, reduce, select, reject, transform, transform_keys
+
+def test_transform_keys_empty_dict():
+    assert transform_keys({}, lambda key, value: value ) == {}
+
+def test_transform_keys_non_empty_dict():
+    assert transform_keys({"a": 2}, lambda key, value: "PRE_%s_%d" % (key, value)) == {"PRE_a_2": 2}
+
+def test_transform_keys_with_overwriting_keys():
+    assert transform_keys({"pre_a": 2, "post_a": 5}, lambda key, value: "a") == {"a": 5}
+
+def test_transform_keys_raises_error():
+    with pytest.raises(TypeError):
+        transform_keys({"pre_a": 2, "post_a": 5}, lambda key, value: {})
 
 def test_transform_empty_dict():
     assert transform({}, lambda key, value: value ) == {}

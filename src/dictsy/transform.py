@@ -102,10 +102,31 @@ def transform(d: dict[Hashable, Any], cb: ValueCallback) -> dict:
   return { key: cb(key, value) for key, value in d.items() }
 
 def transform_keys(d: dict, cb: ValueCallback) -> dict:
-  return { cb(key, value): value for key, value in d.items() }
+  """Returns a new dictionary with same values as the original dictionary, and keys returned by invoking the callback function
 
-def transform_values(d: dict, cb: ValueCallback) -> dict:
-  return { key: cb(key, value) for key, value in d.items() }
+  Returns a new dictionary with identical values but keys replaced by return value of ``cb(key, value)``
+  If same key is returned more than once, the later keys will overwrite previous keys.
+
+  Args:
+    d: Dictionary
+    cb: Callback function accepts two arguments ``key`` and ``value`` and returns the new key
+
+  Returns:
+    A new dictionary with identical values and replaced keys
+
+  Raises:
+    TypeError if key return is not hashable
+
+
+  Examples:
+    >>> transform_keys({}, lambda key, value: value)
+    {}
+    >>> transform_keys({"a": 2}, lambda key, value: "PRE_%s_%d" % (key, value)
+    {"PRE_a_2": 2}
+    >>> transform_keys({"pre_a": 2, "post_a": 5}, lambda key, value: "a")
+    {"a": 5}
+  """
+  return { cb(key, value): value for key, value in d.items() }
 
 def delete_if(d: dict, cb: BoolCallback) -> dict:
   return { key: value for key, value in d.items() if not cb(key, value) }
