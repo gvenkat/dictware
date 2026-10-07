@@ -1,12 +1,9 @@
 import re
+from collections.abc import Hashable
+from typing import Any, Callable, Optional
 
-from typing import Hashable
-from typing import Any
-from typing import Callable
-from typing import Optional
+from .types import BoolCallback, ValueCallback
 
-from .types import ValueCallback
-from .types import BoolCallback
 
 def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any) -> Any:
   """Cumulatively apply a function on each entry (key, value) of dictionary and an initial value, return the result of cumulative application

@@ -1,6 +1,7 @@
 import pytest
 
-from dictsy import every, some, dig
+from dictsy import dig, every, some
+
 
 def test_nested_dict():
     assert dig({"a": {"b": {"c": 1}}}, "a", "b", "c") == 1

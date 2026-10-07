@@ -1,10 +1,9 @@
 import builtins
-
-from typing import Optional
-from typing import Any
-from typing import Hashable
+from collections.abc import Hashable
+from typing import Any, Optional
 
 from .types import BoolCallback
+
 
 def every(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   """Returns ``True`` if ALL values in the ``dict`` are ``True``

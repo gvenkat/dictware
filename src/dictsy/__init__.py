@@ -1,5 +1,5 @@
-from .query import every, some, dig, has_value
-from .transform import invert, compact, reduce, select
+from .query import dig, every, has_value, some
+from .transform import compact, invert, reduce, select
 
 __all__ = [
   every,

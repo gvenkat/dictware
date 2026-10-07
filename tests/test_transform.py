@@ -1,6 +1,6 @@
-import pytest
 
 from dictsy import compact, invert, reduce, select
+
 
 def test_select_empty_dict():
     assert invert({}) == {}
