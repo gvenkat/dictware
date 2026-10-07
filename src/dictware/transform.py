@@ -148,7 +148,7 @@ def delete_if(d: dict, cb: BoolCallback) -> dict:
     >>> delete_if({"a": 2, "b": 3}, lambda key, value: value == 2)
     {"b": 3}
   """
-  for key, value in d.items():
+  for key, value in list(d.items()):
     if cb(key, value):
       del d[key]
   return d

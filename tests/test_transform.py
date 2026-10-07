@@ -4,6 +4,7 @@ import pytest
 
 from dictware import (
     compact,
+    delete_if,
     grep,
     grep_keys,
     grep_keys_v,
@@ -157,3 +158,32 @@ def test_grep_keys_and_grep_keys_v_partition_dict():
     data = {"user_id": 1, "age": 30, 5: "x"}
     pattern = re.compile("user_")
     assert {**grep_keys(data, pattern), **grep_keys_v(data, pattern)} == data
+
+def test_delete_if_empty_dict():
+    assert delete_if({}, lambda key, value: True) == {}
+
+def test_delete_if_removes_matching_entries():
+    assert delete_if({"a": 2, "b": 3, "c": 2}, lambda key, value: value == 2) == {"b": 3}
+
+def test_delete_if_no_matches_leaves_dict_unchanged():
+    assert delete_if({"a": 2, "b": 3}, lambda key, value: value > 10) == {"a": 2, "b": 3}
+
+def test_delete_if_removes_all_entries():
+    assert delete_if({"a": 2, "b": 3}, lambda key, value: True) == {}
+
+def test_delete_if_uses_key_in_callback():
+    assert delete_if({"tmp_a": 1, "b": 2}, lambda key, value: key.startswith("tmp_")) == {"b": 2}
+
+def test_delete_if_treats_truthy_results_as_true():
+    assert delete_if({"a": 0, "b": 5}, lambda key, value: value) == {"a": 0}
+
+def test_delete_if_mutates_and_returns_same_dict():
+    data = {"a": 2, "b": 3}
+    result = delete_if(data, lambda key, value: value == 2)
+    assert result is data
+    assert data == {"b": 3}
+
+def test_delete_if_calls_callback_once_per_entry():
+    seen = []
+    delete_if({"a": 1, "b": 2, "c": 3}, lambda key, value: seen.append((key, value)) or value != 2)
+    assert seen == [("a", 1), ("b", 2), ("c", 3)]

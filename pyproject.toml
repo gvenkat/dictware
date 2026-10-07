@@ -3,11 +3,17 @@ name = "dictware"
 version = "0.1.0"
 description = "Ruby-inspired helpers for working with Python dicts"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "Venkatakrishnan Ganesh", email = "superpulse.x@gmail.com" }
 ]
 requires-python = ">=3.10"
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/gvenkat/dictware"
+Issues = "https://github.com/gvenkat/dictware/issues"
 
 [build-system]
 requires = ["uv_build>=0.12.8,<0.13.0"]
