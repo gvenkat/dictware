@@ -131,7 +131,22 @@ def transform_keys(d: dict, cb: ValueCallback) -> dict:
   return { cb(key, value): value for key, value in d.items() }
 
 def delete_if(d: dict, cb: BoolCallback) -> dict:
-  """
+  """Removes all entries from the dictionary that passes the test ``cb(key, value)``
+
+  Removes all keys from given dictionary, in place, if the given callback function returns a truthy value for ``cb(key, value)``
+
+  Args:
+    d: Dictionary
+    cb: Callback function accepts two arguments ``key`` and ``value`` and returns True/False
+
+  Returns:
+    Modified dictionary after all entries have been removed
+
+  Examples:
+    >>> delete_if({}, lambda key, value: True)
+    {}
+    >>> delete_if({"a": 2, "b": 3}, lambda key, value: value == 2)
+    {"b": 3}
   """
   for key in d.keys():
     value = d[key]
@@ -140,21 +155,36 @@ def delete_if(d: dict, cb: BoolCallback) -> dict:
   return d
 
 def keep_if(d: dict, cb: BoolCallback) -> dict:
-  """
+  """Keeps all entries from the dictionary that passes the test ``cb(key, value)``
+
+  Keeps all keys from given dictionary, if the given callback function returns a truthy value for ``cb(key, value)``, 
+  rest of keys are remoed from the dictionary, in place
+
+  Args:
+    d: Dictionary
+    cb: Callback function accepts two arguments ``key`` and ``value`` and returns True/False
+
+  Returns:
+    Modified dictionary, keeps all the keys where ``cb(key, value)`` returns truthy value and removes the rest
+
+  Examples:
+    >>> keep_if({}, lambda key, value: True)
+    {}
+    >>> keep_if({})
   """
   return delete_if(d, lambda key, value: not cb(key, value))
 
 def grep(d: dict, pattern: re.Pattern):
-  pass
+  return { key: value for key, value in d.items() if pattern.match(str(value)) }
 
 def grep_v(d: dict, pattern: re.Pattern):
-  pass
+  return { key: value for key, value in d.items() if not pattern.match(str(value)) }
 
 def grep_keys(d: dict, pattern: re.Pattern):
-  pass
+  return { key: value for key, value in d.items() if pattern.match(str(key)) }
 
 def grep_keys_v(d: dict, pattern: re.Pattern):
-  pass
+  return { key: value for key, value in d.items() if not pattern.match(str(key)) }
 
 def compact(d: dict, only_none=True) -> dict:
     """Return a new dict with empty values removed from ``d``.

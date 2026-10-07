@@ -1,5 +1,6 @@
 from .query import dig, every, has_value, some
-from .transform import compact, invert, reduce, select, reject, transform, transform_keys
+
+from .transform import compact, invert, reduce, select, reject, transform, transform_keys, delete_if, keep_if
 
 __all__ = [
   every,
@@ -14,4 +15,6 @@ __all__ = [
   reject,
   transform,
   transform_keys,
+  delete_if,
+  keep_if,
 ]
