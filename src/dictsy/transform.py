@@ -3,6 +3,7 @@ import re
 from typing import Hashable
 from typing import Any
 from typing import Callable
+from typing import Optional
 
 from .types import ValueCallback
 from .types import BoolCallback
@@ -33,16 +34,33 @@ def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any) -> Any:
     memo = cb(key, value, memo)
   return memo
 
-def select():
-  pass
+def select(d: dict, cb: Optional[BoolCallback] = None) -> dict:
+  """Returns a new dictionary with entries whose values (or result of callback) are truthy
 
-def select_if():
-  pass
+  Accepts an optional callback function which is called with ``cb(key, value)`` from each entry and
+  the return value is tested, when function is not provided, truthiness of values are tested with ``bool(value)``
 
-def reject():
-  pass
+  Args:
+    d: Dictionary
+    cb: Callback function accepts two arguments ``key`` and ``value``
 
-def reject_if():
+  Returns:
+    New dictionary with entries whose values (or result of callback) are truthy
+
+  Examples:
+    >>> select({})
+    {}
+    >>> select({"a": "", "b": None})
+    {}
+    >>> select({"a": "foobar", "b": None})
+    {"a": "foobar"}
+    >>> select({"a": 5, "b": 2}, lambda key, value: value > 3)
+    {"a": 5}
+  """
+  cb_ = cb or (lambda key, value: bool(value))
+  return {key: value for key, value in d.items() if cb_(key, value)}
+
+def reject(d: dict, cb: Optional[BoolCallback] = None):
   pass
 
 def transform(d: dict[Hashable, Any], cb: ValueCallback) -> dict[Hashable, Any]:

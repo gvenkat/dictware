@@ -52,9 +52,9 @@ def test_every_no_callback(d, expected):
 
 def test_every_with_callback():
   l = {"a": 5, "b": 10}
-  assert all(l) == True
-  assert all(l, lambda k, v: k in ['a', 'b']) == True
-  assert all(l, lambda k, v: v > 5) == False
+  assert every(l) == True
+  assert every(l, lambda k, v: k in ['a', 'b']) == True
+  assert every(l, lambda k, v: v > 5) == False
 
 @pytest.mark.parametrize(
   'd, expected',

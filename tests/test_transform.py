@@ -1,6 +1,15 @@
 import pytest
 
-from dictsy import compact, invert, reduce
+from dictsy import compact, invert, reduce, select
+
+def test_select_empty_dict():
+    assert invert({}) == {}
+
+def test_select_with_falsy_keys():
+    assert select({"a": "", "b": None}) == {}
+
+def test_select_with_cb():
+    assert select({"a": 5, "b": 2}, lambda key, value: value > 3) == { "a": 5 }
 
 def test_invert_swaps_keys_and_values():
     assert invert({"a": 1, "b": 2}) == {1: "a", 2: "b"}
@@ -49,8 +58,8 @@ def test_compact_does_not_mutate_input():
 
 def test_reduce_empty_dict():
     cb = lambda key, value, memo: memo
-    assert reduce({}, cb) == 0
+    assert reduce({}, cb, 0) == 0
 
 def test_reduce_simple_sum():
-    assert reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value) == 3
+    assert reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value, 0) == 3
     assert reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value, 10) == 13
