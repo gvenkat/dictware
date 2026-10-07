@@ -1,5 +1,5 @@
 from .query import dig, every, has_value, some
-from .transform import compact, invert, reduce, select
+from .transform import compact, invert, reduce, select, reject
 
 __all__ = [
   every,
@@ -11,4 +11,5 @@ __all__ = [
   compact,
   reduce,
   select,
+  reject,
 ]

@@ -57,8 +57,29 @@ def select(d: dict, cb: Optional[BoolCallback] = None) -> dict:
   cb_ = cb or (lambda key, value: bool(value))
   return {key: value for key, value in d.items() if cb_(key, value)}
 
-def reject(d: dict, cb: Optional[BoolCallback] = None):
-  pass
+def reject(d: dict, cb: Optional[BoolCallback] = None) -> dict:
+  """Returns a new dictionary with entries that fail the ``cb(key, value)`` test (or value with ``bool(value)`` that is falsy)
+
+  With optional callback function, a new dictionary contains all (key, value) pairs that fails the ``cb(key, value)`` test, without 
+  the callback, it returns keys with values that are falsy
+
+  Args:
+    d: Dictionary
+    cb: Callback function accepts two arguments ``key`` and ``value``
+
+  Returns:
+    New dictionary with entries that fail the ``cb(key, value)`` test (or value with ``bool(value)`` that is falsy)
+
+  Examples:
+    >>> reject({})
+    {}
+    >>> reject({"a": "foo"})
+    {}
+    >>> reject({"a": 2, "b": 5}, lambda key, value: value > 4)
+    {"a": 2}
+  """
+  cb_ = (lambda key, value: not bool(value)) if cb is None else (lambda key, value: not cb(key, value))
+  return select(d, cb_)
 
 def transform(d: dict[Hashable, Any], cb: ValueCallback) -> dict[Hashable, Any]:
   return { key: cb(key, value) for key, value in d.items() }

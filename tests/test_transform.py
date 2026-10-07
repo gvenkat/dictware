@@ -1,9 +1,17 @@
 
-from dictsy import compact, invert, reduce, select
+from dictsy import compact, invert, reduce, select, reject
 
+def test_reject_empty_dict():
+    assert reject({}) == {}
+
+def test_reject_non_empty_dict():
+    assert reject({"a": "", "b": "foo"}) == {"a": ""}
+
+def test_reject_with_cb():
+    assert reject({"a": 2, "b": 5}, lambda key, value: value > 4) == {"a": 2}
 
 def test_select_empty_dict():
-    assert invert({}) == {}
+    assert select({}) == {}
 
 def test_select_with_falsy_keys():
     assert select({"a": "", "b": None}) == {}
@@ -13,7 +21,6 @@ def test_select_with_cb():
 
 def test_invert_swaps_keys_and_values():
     assert invert({"a": 1, "b": 2}) == {1: "a", 2: "b"}
-
 
 def test_invert_skips_unhashable_values():
     assert invert({"a": 1, "b": [2], "c": {"x": 3}, "d": (1, [2])}) == {1: "a"}
