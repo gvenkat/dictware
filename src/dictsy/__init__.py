@@ -1,3 +1,7 @@
+""""""
+
+__version__ = '0.0.1'
+
 from .query import dig, every, has_value, one, some
 from .transform import (
   compact,
@@ -14,25 +18,3 @@ from .transform import (
   transform,
   transform_keys,
 )
-
-__all__ = [
-  every,
-  some,
-  dig,
-  one,
-  has_value,
-
-  invert,
-  compact,
-  reduce,
-  select,
-  reject,
-  transform,
-  transform_keys,
-  delete_if,
-  keep_if,
-  grep,
-  grep_keys,
-  grep_v,
-  grep_keys_v
-]
