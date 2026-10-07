@@ -131,9 +131,17 @@ def transform_keys(d: dict, cb: ValueCallback) -> dict:
   return { cb(key, value): value for key, value in d.items() }
 
 def delete_if(d: dict, cb: BoolCallback) -> dict:
-  return { key: value for key, value in d.items() if not cb(key, value) }
+  """
+  """
+  for key in d.keys():
+    value = d[key]
+    if cb(key, value):
+      del d[key]
+  return d
 
 def keep_if(d: dict, cb: BoolCallback) -> dict:
+  """
+  """
   return delete_if(d, lambda key, value: not cb(key, value))
 
 def grep(d: dict, pattern: re.Pattern):
