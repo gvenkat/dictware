@@ -92,14 +92,60 @@ def none(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   return not some(d, cb)
 
 def one(d: dict, cb: Optional[BoolCallback] = None) -> bool:
-  return [bool(value) if cb is None else cb(key, value) for key, value in d.items()].count(True) == 1
+  """Returns ``True`` if EXACTLY ONE of the values is truthy
 
-def has_value(d: dict, value_or_cb: Any | Optional[BoolCallback]) -> bool:
-  is_callable = callable(value_or_cb)
-  for value in d.items():
-    if (is_callable and value_or_cb(value)) or value == value_or_cb:
-      return True
-  return False
+  Returns ``True`` if exactly one value in a given dict is "truthy" or exactly one of the values evaluated by
+  the optional callback is "truthy"
+
+  Args:
+    d: The dict object
+    cb: If callback is given, result of ``cb(key, value)`` is considered, if not ``value`` is tested
+        directly for truthiness
+
+  Returns:
+    True if exactly one value (or ``cb(key, value)``) is evaluated to True. False otherwise
+
+  Examples:
+    >>> one({})
+    False
+    >>> one({"a": 1, "b": None})
+    True
+    >>> one({"a": 1, "b": 2})
+    False
+    >>> one({"a": 1, "b": 5}, lambda k, v: v > 2)
+    True
+  """
+  return [bool(value if cb is None else cb(key, value)) for key, value in d.items()].count(True) == 1
+
+def has_value(d: dict, value_or_cb: Any | BoolCallback) -> bool:
+  """Returns ``True`` if the dict contains the given value, or any entry passes the callback test
+
+  When ``value_or_cb`` is callable, it is called as ``cb(key, value)`` for each entry and ``True`` is returned
+  as soon as it returns a truthy value. Otherwise each value is compared with ``value == value_or_cb``.
+
+  Note: a callable is always treated as a callback, so to look for a function stored as a value use
+  ``has_value(d, lambda k, v: v is func)``
+
+  Args:
+    d: The dict object
+    value_or_cb: Value to look for, or callback function accepting ``key`` and ``value``
+
+  Returns:
+    True if any value equals ``value_or_cb`` (or ``cb(key, value)`` is truthy). False otherwise
+
+  Examples:
+    >>> has_value({}, 1)
+    False
+    >>> has_value({"a": 1, "b": 2}, 2)
+    True
+    >>> has_value({"a": 1, "b": 2}, "a")
+    False
+    >>> has_value({"a": 1, "b": 2}, lambda k, v: v > 1)
+    True
+  """
+  if callable(value_or_cb):
+    return builtins.any(value_or_cb(key, value) for key, value in d.items())
+  return value_or_cb in d.values()
 
 
 def dig(obj: dict | list, *keys: Hashable) -> Any:

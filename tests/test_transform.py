@@ -2,7 +2,7 @@ import pytest
 import re
 
 from dictsy import compact, invert, reduce, select, reject, transform, transform_keys
-from dictsy.transform import grep, grep_v, grep_keys, grep_keys_v
+from dictsy import grep, grep_v, grep_keys, grep_keys_v
 
 def test_transform_keys_empty_dict():
     assert transform_keys({}, lambda key, value: value ) == {}

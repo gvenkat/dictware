@@ -1,6 +1,7 @@
 import pytest
 
-from dictsy import dig, every, some
+from dictsy import dig, every, has_value, some
+from dictsy.query import one
 
 
 def test_nested_dict():
@@ -72,3 +73,57 @@ def test_some_no_callback(d, expected):
 def test_any_with_callback():
   assert some({"a": 2, "b": 5}, lambda k, v: v > 5) == False
   assert some({"a": 2, "b": 5}, lambda k, v: v > 2) == True
+@pytest.mark.parametrize(
+  'd, expected',
+  [
+    [{}, False],
+    [{"a": None}, False],
+    [{"a": 1}, True],
+    [{"a": 1, "b": None, "c": 0}, True],
+    [{"a": 1, "b": "x"}, False],
+    [{"a": [], "b": "", "c": False}, False],
+  ]
+)
+def test_one_no_callback(d, expected):
+  assert one(d) == expected
+
+def test_one_with_callback():
+  d = {"a": 2, "b": 5, "c": 8}
+  assert one(d, lambda k, v: v > 6) == True
+  assert one(d, lambda k, v: v > 3) == False
+  assert one(d, lambda k, v: v > 10) == False
+  assert one(d, lambda k, v: k == "b") == True
+
+def test_one_callback_truthy_non_bool():
+  assert one({"a": 0, "b": 5}, lambda k, v: v) == True
+  assert one({"a": 3, "b": 5}, lambda k, v: v) == False
+
+@pytest.mark.parametrize(
+  'd, value, expected',
+  [
+    [{}, 1, False],
+    [{"a": 1, "b": 2}, 2, True],
+    [{"a": 1, "b": 2}, 3, False],
+    [{"a": 1, "b": 2}, "a", False],
+    [{"a": None}, None, True],
+    [{"a": [1, 2]}, [1, 2], True],
+    [{"a": {"x": 1}}, {"x": 1}, True],
+  ]
+)
+def test_has_value(d, value, expected):
+  assert has_value(d, value) == expected
+
+def test_has_value_with_callback():
+  d = {"a": 2, "b": 5}
+  assert has_value(d, lambda k, v: v > 4) == True
+  assert has_value(d, lambda k, v: v > 5) == False
+  assert has_value(d, lambda k, v: k == "a" and v == 2) == True
+  assert has_value({}, lambda k, v: True) == False
+
+def test_has_value_callback_short_circuits():
+  seen = []
+  def cb(k, v):
+    seen.append(k)
+    return v == 1
+  assert has_value({"a": 1, "b": 2}, cb) == True
+  assert seen == ["a"]
