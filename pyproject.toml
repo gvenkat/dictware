@@ -1,12 +1,12 @@
 [project]
-name = "dictsy"
+name = "dictware"
 version = "0.1.0"
-description = "Add your description here"
+description = "Ruby-inspired helpers for working with Python dicts"
 readme = "README.md"
 authors = [
     { name = "Venkatakrishnan Ganesh", email = "superpulse.x@gmail.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = []
 
 [build-system]

@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from dictsy import (
+from dictware import (
     compact,
     grep,
     grep_keys,
