@@ -1,9 +1,11 @@
 import re
+
+from typing import Any
+from typing import Callable
+from typing import Optional
 from collections.abc import Hashable
-from typing import Any, Callable, Optional
 
 from .types import BoolCallback, ValueCallback
-
 
 def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any) -> Any:
   """Cumulatively apply a function on each entry (key, value) of dictionary and an initial value, return the result of cumulative application
@@ -60,7 +62,7 @@ def select(d: dict, cb: Optional[BoolCallback] = None) -> dict:
 def reject(d: dict, cb: Optional[BoolCallback] = None) -> dict:
   """Returns a new dictionary with entries that fail the ``cb(key, value)`` test (or value with ``bool(value)`` that is falsy)
 
-  With optional callback function, a new dictionary contains all (key, value) pairs that fails the ``cb(key, value)`` test, without 
+  With optional callback function, a new dictionary contains all (key, value) pairs that fails the ``cb(key, value)`` test, without
   the callback, it returns keys with values that are falsy
 
   Args:
