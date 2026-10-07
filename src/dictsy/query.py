@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 import builtins
 from collections.abc import Hashable
-from typing import Any, Optional
+from typing import Any
 
 from .types import BoolCallback
 
 
-def every(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+def every(d: dict, cb: BoolCallback | None = None) -> bool:
   """Returns ``True`` if ALL values in the ``dict`` are ``True``
 
   Returns ``True`` if ALL values in a given dict is "truthy" or ALL the values evaulated by
@@ -40,7 +42,7 @@ def every(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   return True
 
 
-def some(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+def some(d: dict, cb: BoolCallback | None = None) -> bool:
   """Returns ``True`` if ANY of the values in the ``dict`` are ``True``
 
   Returns ``True`` if ANY of the values in a given dict is "truthy" or ANY the values evaulated by
@@ -75,7 +77,7 @@ def some(d: dict, cb: Optional[BoolCallback] = None) -> bool:
 
   return False
 
-def none(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+def none(d: dict, cb: BoolCallback | None = None) -> bool:
   """Returns ``True`` if NONE of the values are truthy
 
   Returns ``True`` if NONE of the values in a given dict is "truthy" or NONE of the values evaulated by
@@ -91,7 +93,7 @@ def none(d: dict, cb: Optional[BoolCallback] = None) -> bool:
   """
   return not some(d, cb)
 
-def one(d: dict, cb: Optional[BoolCallback] = None) -> bool:
+def one(d: dict, cb: BoolCallback | None = None) -> bool:
   """Returns ``True`` if EXACTLY ONE of the values is truthy
 
   Returns ``True`` if exactly one value in a given dict is "truthy" or exactly one of the values evaluated by

@@ -1,11 +1,11 @@
-import re
+from __future__ import annotations
 
-from typing import Any
-from typing import Callable
-from typing import Optional
+import re
 from collections.abc import Hashable
+from typing import Any, Callable
 
 from .types import BoolCallback, ValueCallback
+
 
 def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any) -> Any:
   """Cumulatively apply a function on each entry (key, value) of dictionary and an initial value, return the result of cumulative application
@@ -33,7 +33,7 @@ def reduce(d: dict, cb: Callable[[Hashable, Any, Any], Any], memo: Any) -> Any:
     memo = cb(key, value, memo)
   return memo
 
-def select(d: dict, cb: Optional[BoolCallback] = None) -> dict:
+def select(d: dict, cb: BoolCallback | None = None) -> dict:
   """Returns a new dictionary with entries whose values (or result of callback) are truthy
 
   Accepts an optional callback function which is called with ``cb(key, value)`` from each entry and
@@ -59,7 +59,7 @@ def select(d: dict, cb: Optional[BoolCallback] = None) -> dict:
   cb_ = cb or (lambda key, value: bool(value))
   return {key: value for key, value in d.items() if cb_(key, value)}
 
-def reject(d: dict, cb: Optional[BoolCallback] = None) -> dict:
+def reject(d: dict, cb: BoolCallback | None = None) -> dict:
   """Returns a new dictionary with entries that fail the ``cb(key, value)`` test (or value with ``bool(value)`` that is falsy)
 
   With optional callback function, a new dictionary contains all (key, value) pairs that fails the ``cb(key, value)`` test, without
@@ -123,7 +123,7 @@ def transform_keys(d: dict, cb: ValueCallback) -> dict:
   Examples:
     >>> transform_keys({}, lambda key, value: value)
     {}
-    >>> transform_keys({"a": 2}, lambda key, value: "PRE_%s_%d" % (key, value)
+    >>> transform_keys({"a": 2}, lambda key, value: "PRE_{key}_{value}".format(key=key, value=value)
     {"PRE_a_2": 2}
     >>> transform_keys({"pre_a": 2, "post_a": 5}, lambda key, value: "a")
     {"a": 5}
@@ -148,8 +148,7 @@ def delete_if(d: dict, cb: BoolCallback) -> dict:
     >>> delete_if({"a": 2, "b": 3}, lambda key, value: value == 2)
     {"b": 3}
   """
-  for key in d.keys():
-    value = d[key]
+  for key, value in d.items():
     if cb(key, value):
       del d[key]
   return d
