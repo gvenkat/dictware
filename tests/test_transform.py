@@ -1,6 +1,8 @@
 import pytest
+import re
 
 from dictsy import compact, invert, reduce, select, reject, transform, transform_keys
+from dictsy.transform import grep, grep_v, grep_keys, grep_keys_v
 
 def test_transform_keys_empty_dict():
     assert transform_keys({}, lambda key, value: value ) == {}
@@ -90,3 +92,55 @@ def test_reduce_empty_dict():
 def test_reduce_simple_sum():
     assert reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value, 0) == 3
     assert reduce({"a": 1, "b": 2}, lambda key, value, memo: memo + value, 10) == 13
+def test_grep_empty_dict():
+    assert grep({}, re.compile("foo")) == {}
+
+def test_grep_matches_values():
+    assert grep({"a": "foobar", "b": "bar", "c": "food"}, re.compile("foo")) == {"a": "foobar", "c": "food"}
+
+def test_grep_matches_from_start_of_value():
+    assert grep({"a": "foobar", "b": "barfoo"}, re.compile("foo")) == {"a": "foobar"}
+
+def test_grep_converts_values_to_str():
+    assert grep({"a": 10, "b": 25, "c": None}, re.compile(r"1\d")) == {"a": 10}
+
+def test_grep_does_not_mutate_input():
+    data = {"a": "foo", "b": "bar"}
+    grep(data, re.compile("foo"))
+    assert data == {"a": "foo", "b": "bar"}
+
+def test_grep_v_empty_dict():
+    assert grep_v({}, re.compile("foo")) == {}
+
+def test_grep_v_rejects_matching_values():
+    assert grep_v({"a": "foobar", "b": "barfoo", "c": 1}, re.compile("foo")) == {"b": "barfoo", "c": 1}
+
+def test_grep_and_grep_v_partition_dict():
+    data = {"a": "foo", "b": "bar", "c": 3}
+    pattern = re.compile("foo")
+    assert {**grep(data, pattern), **grep_v(data, pattern)} == data
+
+def test_grep_keys_empty_dict():
+    assert grep_keys({}, re.compile("user_")) == {}
+
+def test_grep_keys_matches_keys():
+    data = {"user_id": 1, "user_name": "bob", "age": 30}
+    assert grep_keys(data, re.compile("user_")) == {"user_id": 1, "user_name": "bob"}
+
+def test_grep_keys_converts_keys_to_str():
+    assert grep_keys({1: "a", 10: "b", 2: "c"}, re.compile("1")) == {1: "a", 10: "b"}
+
+def test_grep_keys_ignores_values():
+    assert grep_keys({"a": "user_x"}, re.compile("user_")) == {}
+
+def test_grep_keys_v_empty_dict():
+    assert grep_keys_v({}, re.compile("user_")) == {}
+
+def test_grep_keys_v_rejects_matching_keys():
+    data = {"user_id": 1, "user_name": "bob", "age": 30}
+    assert grep_keys_v(data, re.compile("user_")) == {"age": 30}
+
+def test_grep_keys_and_grep_keys_v_partition_dict():
+    data = {"user_id": 1, "age": 30, 5: "x"}
+    pattern = re.compile("user_")
+    assert {**grep_keys(data, pattern), **grep_keys_v(data, pattern)} == data

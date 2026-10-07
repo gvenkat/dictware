@@ -174,16 +174,90 @@ def keep_if(d: dict, cb: BoolCallback) -> dict:
   """
   return delete_if(d, lambda key, value: not cb(key, value))
 
-def grep(d: dict, pattern: re.Pattern):
+def grep(d: dict, pattern: re.Pattern) -> dict:
+  """Returns a new dictionary with entries whose values match the regular expression ``pattern``
+
+  Each value is converted with ``str(value)`` and tested with ``pattern.match``, so the pattern must
+  match at the beginning of the string. Use ``.*`` as a prefix or ``re.search`` style patterns to match anywhere.
+
+  Args:
+    d: Dictionary
+    pattern: Compiled regular expression, e.g. ``re.compile("^foo")``
+
+  Returns:
+    New dictionary with entries whose values match the pattern
+
+  Examples:
+    >>> grep({}, re.compile("foo"))
+    {}
+    >>> grep({"a": "foobar", "b": "barfoo"}, re.compile("foo"))
+    {'a': 'foobar'}
+    >>> grep({"a": 10, "b": 25}, re.compile("1[0-9]"))
+    {'a': 10}
+  """
   return { key: value for key, value in d.items() if pattern.match(str(value)) }
 
-def grep_v(d: dict, pattern: re.Pattern):
+def grep_v(d: dict, pattern: re.Pattern) -> dict:
+  """Returns a new dictionary with entries whose values do not match the regular expression ``pattern``
+
+  Inverse of ``grep``. Each value is converted with ``str(value)`` and tested with ``pattern.match``,
+  entries that fail the match are kept.
+
+  Args:
+    d: Dictionary
+    pattern: Compiled regular expression, e.g. ``re.compile("^foo")``
+
+  Returns:
+    New dictionary with entries whose values do not match the pattern
+
+  Examples:
+    >>> grep_v({}, re.compile("foo"))
+    {}
+    >>> grep_v({"a": "foobar", "b": "barfoo"}, re.compile("foo"))
+    {'b': 'barfoo'}
+  """
   return { key: value for key, value in d.items() if not pattern.match(str(value)) }
 
-def grep_keys(d: dict, pattern: re.Pattern):
+def grep_keys(d: dict, pattern: re.Pattern) -> dict:
+  """Returns a new dictionary with entries whose keys match the regular expression ``pattern``
+
+  Each key is converted with ``str(key)`` and tested with ``pattern.match``, so the pattern must
+  match at the beginning of the string.
+
+  Args:
+    d: Dictionary
+    pattern: Compiled regular expression, e.g. ``re.compile("^foo")``
+
+  Returns:
+    New dictionary with entries whose keys match the pattern
+
+  Examples:
+    >>> grep_keys({}, re.compile("user_"))
+    {}
+    >>> grep_keys({"user_id": 1, "user_name": "bob", "age": 30}, re.compile("user_"))
+    {'user_id': 1, 'user_name': 'bob'}
+  """
   return { key: value for key, value in d.items() if pattern.match(str(key)) }
 
-def grep_keys_v(d: dict, pattern: re.Pattern):
+def grep_keys_v(d: dict, pattern: re.Pattern) -> dict:
+  """Returns a new dictionary with entries whose keys do not match the regular expression ``pattern``
+
+  Inverse of ``grep_keys``. Each key is converted with ``str(key)`` and tested with ``pattern.match``,
+  entries that fail the match are kept.
+
+  Args:
+    d: Dictionary
+    pattern: Compiled regular expression, e.g. ``re.compile("^foo")``
+
+  Returns:
+    New dictionary with entries whose keys do not match the pattern
+
+  Examples:
+    >>> grep_keys_v({}, re.compile("user_"))
+    {}
+    >>> grep_keys_v({"user_id": 1, "user_name": "bob", "age": 30}, re.compile("user_"))
+    {'age': 30}
+  """
   return { key: value for key, value in d.items() if not pattern.match(str(key)) }
 
 def compact(d: dict, only_none=True) -> dict:
