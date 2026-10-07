@@ -1,7 +1,7 @@
 import pytest
 
 from dictware import dig, every, has_value, some
-from dictware.query import one
+from dictware import one
 
 
 def test_nested_dict():
